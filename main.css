@@ -1,11 +1,3 @@
-:root {
-    --primary: #4a69bd;
-    --secondary: #6a89cc;
-    --accent: #f6b93b;
-    --background: #f5f6fa;
-    --text: #2c3e50;
-}
-
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--background);
