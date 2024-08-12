@@ -3,82 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>French Passé Composé Quiz</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        #question {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        #answer {
-            width: 300px;
-            padding: 10px;
-            font-size: 16px;
-        }
-        #submitBtn, #hintBtn, #startBtn {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
-        }
-        #feedback {
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .feedback.correct {
-            color: green;
-        }
-        .feedback.incorrect {
-            color: red;
-        }
-        .feedback.hint {
-            color: blue;
-        }
-        #score, #time, #streak {
-            font-size: 18px;
-            margin: 10px;
-        }
-        #progress-container {
-            width: 100%;
-            background: #eee;
-            height: 20px;
-            margin: 20px 0;
-            position: relative;
-        }
-        #progress {
-            height: 100%;
-            background: #4caf50;
-            width: 0;
-        }
-        #level-indicator {
-            font-size: 20px;
-            color: #ff5722;
-            display: none;
-            margin-top: 20px;
-        }
-    </style>
+    <title>French Learning Game</title>
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
-    <h1>French Passé Composé Quiz</h1>
-    <div id="level-indicator"></div>
-    <div id="question">Click "Start" to begin the quiz.</div>
-    <input type="text" id="answer" placeholder="Your answer...">
-    <br>
-    <button id="startBtn">Start</button>
-    <button id="submitBtn" style="display:none;">Submit</button>
-    <button id="hintBtn" style="display:none;">Show Hint</button>
-    <div id="feedback"></div>
-    <div id="score">Score: 0/0</div>
-    <div id="time">Time: 0:00</div>
-    <div id="streak">Streak: 0</div>
-    <div id="progress-container">
-        <div id="progress"></div>
+    <div class="container">
+        <h1>French Learning Game</h1>
+        <div id="question"></div>
+        <input type="text" id="answer" placeholder="Enter your answer here" style="display:none;">
+        <button id="startBtn" class="btn">Start Game</button>
+        <button id="submitBtn" class="btn" style="display:none;">Submit Answer</button>
+        <button id="hintBtn" class="btn" style="display:none;">Show Hint</button>
+        <div id="feedback" class="feedback"></div>
+        <div id="score">Score: 0/0</div>
+        <div id="time">Time: 0:00</div>
+        <div id="streak">Streak: 0</div>
+        <div class="progress-bar">
+            <div id="progress" class="progress"></div>
+        </div>
+        <div id="level-indicator" style="display:none;"></div>
+        <select id="difficulty" style="display:none;">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
     </div>
-
-    <script src="script.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>
