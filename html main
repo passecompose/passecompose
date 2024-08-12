@@ -1,1 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Passé Composé Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4a69bd;
+            --secondary: #6a89cc;
+            --accent: #f6b93b;
+            --background: #f5f6fa;
+            --text: #2c3e50;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: var(--secondary);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .feedback {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .correct { background-color: #d4edda; color: #155724; }
+        .incorrect { background-color: #f8d7da; color: #721c24; }
+        .hint { background-color: #fff3cd; color: #856404; }
+        #question {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        #score, #time, #streak {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 18px;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .progress {
+            width: 0%;
+            height: 10px;
+            background-color: var(--accent);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+        .accent-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .accent-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        #level-indicator {
+            text-align: center;
+            font-size: 20px;
+            margin-top: 15px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>French Passé Composé Adventure</h1>
+        <div id="game">
+            <select id="difficulty">
+                <option value="easy">Beginner</option>
+                <option value="medium">Intermediate</option>
+                <option value="hard">Advanced</option>
+            </select>
+            <button id="startBtn" class="btn">Start Adventure</button>
+            <div id="question"></div>
+            <input type="text" id="answer" placeholder="Your answer in French">
+            <div class="accent-buttons">
+                <button class="accent-btn" onclick="insertAccent('é')">é</button>
+                <button class="accent-btn" onclick="insertAccent('è')">è</button>
+                <button class="accent-btn" onclick="insertAccent('ê')">ê</button>
+                <button class="accent-btn" onclick="insertAccent('ç')">ç</button>
+                <button class="accent-btn" onclick="insertAccent('à')">à</button>
+            </div>
+            <button id="submitBtn" class="btn">Submit</button>
+            <button id="hintBtn" class="btn">Get a Hint</button>
+            <div id="feedback" class="feedback"></div>
+            <div id="score"></div>
+            <div id="time"></div>
+            <div id="streak"></div>
+            <div id="level-indicator"></div>
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const verbs = [
+            { inf: "aller", part: "allé", aux: "être", diff: "easy", eng: "to go" },
+            { inf: "avoir", part: "eu", aux: "avoir", diff: "easy", eng: "to have" },
+            { inf: "être", part: "été", aux: "avoir", diff: "easy", eng: "to be" },
+            { inf: "faire", part: "fait", aux: "avoir", diff: "easy", eng: "to do/make" },
+            { inf: "venir", part: "venu", aux: "être", diff: "easy", eng: "to come" },
+            { inf: "voir", part: "vu", aux: "avoir", diff: "medium", eng: "to see" },
+            { inf: "prendre", part: "pris", aux: "avoir", diff: "medium", eng: "to take" },
+            { inf: "pouvoir", part: "pu", aux: "avoir", diff: "medium", eng: "to be able to" },
+            { inf: "savoir", part: "su", aux: "avoir", diff: "medium", eng: "to know (a fact)" },
+            { inf: "vouloir", part: "voulu", aux: "avoir", diff: "medium", eng: "to want" },
+            { inf: "devoir", part: "dû", aux: "avoir", diff: "hard", eng: "to have to/must" },
+            { inf: "falloir", part: "fallu", aux: "avoir", diff: "hard", eng: "to be necessary" },
+            { inf: "pleuvoir", part: "plu", aux: "avoir", diff: "hard", eng: "to rain" },
+            { inf: "mourir", part: "mort", aux: "être", diff: "hard", eng: "to die" },
+            { inf: "naître", part: "né", aux: "être", diff: "hard", eng: "to be born" }
+        ];
+        const subjects = ["Je", "Tu", "Il/Elle", "Nous", "Vous", "Ils/Elles"];
+        let currentVerb, currentSubject, score, questionCount, startTime, gameInterval, streak = 0, level = 1;
 
+        const $ = id => document.getElementById(id);
+        const random = arr => arr[Math.floor(Math.random() * arr.length)];
+
+        function startGame() {
+            score = 0;
+            questionCount = 0;
+            streak = 0;
+            level = 1;
+            startTime = Date.now();
+            gameInterval = setInterval(updateTime, 1000);
+            nextQuestion();
+            $('startBtn').style.display = 'none';
+            $('submitBtn').style.display = 'inline-block';
+            $('hintBtn').style.display = 'inline-block';
+            $('answer').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (questionCount >= 20) return endGame();
+            questionCount++;
+            currentVerb = random(verbs.filter(v => v.diff === $('difficulty').value));
+            currentSubject = random(subjects);
+            $('question').innerHTML = `<strong>Question ${questionCount}/20:</strong><br>Translate to French (Passé Composé):<br>"${currentSubject} ${currentVerb.eng}"`;
+            $('answer').value = '';
+            $('feedback').textContent = '';
+            $('feedback').className = 'feedback';
+            updateScore();
+            updateProgress();
+        }
+
+        function checkAnswer() {
+            const userAnswer = $('answer').value.trim().toLowerCase();
+            const correctAnswer = `${currentSubject.toLowerCase()} ${getAuxiliary()} ${getParticiple()}`.toLowerCase();
+            const isCorrect = userAnswer === correctAnswer;
+            $('feedback').textContent = isCorrect ? 'Correct! Well done!' : `Not quite. The correct answer is: "${correctAnswer}"`;
+            $('feedback').className = isCorrect ? 'feedback correct' : 'feedback incorrect';
+            if (isCorrect) {
+                score++;
+                streak++;
+                if (streak % 5 === 0) levelUp();
+            } else {
+                streak = 0;
+            }
+            updateStreak();
+            setTimeout(nextQuestion, 2000);
+        }
+
+        function getAuxiliary() {
+            const auxConj = {
+                être: ["suis", "es", "est", "sommes", "êtes", "sont"],
+                avoir: ["ai", "as", "a", "avons", "avez", "ont"]
+            };
+            return auxConj[currentVerb.aux][subjects.indexOf(currentSubject)];
+        }
+
+        function getParticiple() {
+            let part = currentVerb.part;
+            if (currentVerb.aux === "être") {
+                if (["Je", "Tu", "Il/Elle"].includes(currentSubject)) part += "e";
+                if (["Nous", "Vous", "Ils/Elles"].includes(currentSubject)) part += "s";
+            }
+            return part;
+        }
+
+        function showHint() {
+            $('feedback').textContent = `Hint: This verb uses "${currentVerb.aux}" as its auxiliary. The past participle is "${currentVerb.part}".`;
+            $('feedback').className = 'feedback hint';
+        }
+
+        function updateScore() {
+            $('score').textContent = `Score: ${score}/${questionCount}`;
+        }
+
+        function updateTime() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            $('time').textContent = `Time: ${Math.floor(elapsed / 60)}:${(elapsed % 60).toString().padStart(2, '0')}`;
+        }
+
+        function updateStreak() {
+            $('streak').textContent = `Streak: ${streak}`;
+        }
+
+        function updateProgress() {
+            $('progress').style.width = `${(questionCount / 20) * 100}%`;
+        }
+
+        function levelUp() {
+            level++;
+            $('level-indicator').textContent = `Level ${level}`;
+            $('level-indicator').style.display = 'block';
+            setTimeout(() => $('level-indicator').style.display = 'none', 2000);
+        }
+
+        function endGame() {
+            clearInterval(gameInterval);
+            $('question').innerHTML = `<strong>Adventure Complete!</strong><br>Final Score: ${score}/20<br>Time: ${$('time').textContent.split(': ')[1]}`;
+            $('answer').style.display = 'none';
+            $('submitBtn').style.display = 'none';
+            $('hintBtn').style.display = 'none';
+            $('startBtn').style.display = 'inline-block';
+            $('startBtn').textContent = 'Start New Adventure';
+        }
+
+        function insertAccent(accent) {
+            const input = $('answer');
+            const start = input.selectionStart;
+            const end = input.selectionEnd;
+            input.value = input.value.substring(0, start) + accent + input.value.substring(end);
+            input.setSelectionRange(start + 1, start + 1);
+            input.focus();
+        }
+
+        $('startBtn').onclick = startGame;
+        $('submitBtn').onclick = checkAnswer;
+        $('hintBtn').onclick = showHint;
+        $('answer').onkeypress = e => { if (e.key === 'Enter') checkAnswer(); };
+    </script>
+</body>
+</html>
