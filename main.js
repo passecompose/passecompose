@@ -15,6 +15,7 @@ const verbs = [
     { inf: "mourir", part: "mort", aux: "être", diff: "hard", eng: "to die" },
     { inf: "naître", part: "né", aux: "être", diff: "hard", eng: "to be born" }
 ];
+
 const subjects = ["Je", "Tu", "Il/Elle", "Nous", "Vous", "Ils/Elles"];
 let currentVerb, currentSubject, score, questionCount, startTime, gameInterval, streak = 0, level = 1;
 
@@ -113,24 +114,13 @@ function levelUp() {
 
 function endGame() {
     clearInterval(gameInterval);
-    $('question').innerHTML = `<strong>Adventure Complete!</strong><br>Final Score: ${score}/20<br>Time: ${$('time').textContent.split(': ')[1]}`;
-    $('answer').style.display = 'none';
+    $('question').innerHTML = `<strong>Game Over!</strong><br>Your final score is ${score}/20.`;
     $('submitBtn').style.display = 'none';
     $('hintBtn').style.display = 'none';
-    $('startBtn').style.display = 'inline-block';
-    $('startBtn').textContent = 'Start New Adventure';
 }
 
-function insertAccent(accent) {
-    const input = $('answer');
-    const start = input.selectionStart;
-    const end = input.selectionEnd;
-    input.value = input.value.substring(0, start) + accent + input.value.substring(end);
-    input.setSelectionRange(start + 1, start + 1);
-    input.focus();
-}
-
-$('startBtn').onclick = startGame;
-$('submitBtn').onclick = checkAnswer;
-$('hintBtn').onclick = showHint;
-$('answer').onkeypress = e => { if (e.key === 'Enter') checkAnswer(); };
+document.addEventListener('DOMContentLoaded', () => {
+    $('startBtn').addEventListener('click', startGame);
+    $('submitBtn').addEventListener('click', checkAnswer);
+    $('hintBtn').addEventListener('click', showHint);
+});
